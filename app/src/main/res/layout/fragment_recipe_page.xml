@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/mainContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/recipe_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recipe Name"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/author_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Author:\nNULL"
+                    android:textSize="20sp"
+                    android:padding="16dp"
+                    android:gravity="center_horizontal"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="0.5"
+                    android:weightSum="1">
+                    <TextView
+                        android:id="@+id/rating_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.5"
+                        android:text="Rating"
+                        android:textSize="20sp"
+                        android:paddingTop="16dp"
+                        android:gravity="center_horizontal"/>
+                    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                        android:id="@+id/averageRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.5"
+                        android:numStars="5"
+                        android:stepSize="0.1"
+                        android:progressTint="@color/yellow_rating"
+                        style="@style/Widget.MaterialRatingBar.RatingBar.Indicator" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/recipe_prep_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Prep Time: NULL"
+                android:textSize="18sp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/recipe_cook_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cook Time: NULL"
+                android:textSize="18sp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/recipe_servings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Servings: NULL"
+                android:textSize="18sp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/recipe_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="price: NULL"
+                android:textSize="18sp"
+                android:padding="16dp" />
+
+
+            <TextView
+                android:id="@+id/ingredients_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ingredients:"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/recipe_directions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Directions:"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/instructions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reviews"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/addReview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/baseline_add_24"
+                    android:layout_marginBottom="4dp"
+                    android:elevation="8dp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

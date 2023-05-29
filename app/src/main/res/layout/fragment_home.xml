@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/homepage_background"
+    tools:context=".HomeFragment">
+    <RelativeLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/settingsButton"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/baseline_settings_24"
+            android:layout_marginTop="43dp"
+            android:layout_marginStart="25dp"/>
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/default_profilepic"/>
+
+        <TextView
+            android:id="@+id/welcomeMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profilePic"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:text="Welcome User"
+            android:textColor="@color/white"
+            android:textSize="35dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_below="@id/welcomeMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/table_rounded_corners"
+                android:elevation="100dp"
+                android:padding="24dp"
+                android:layout_centerHorizontal="true">
+                <TableRow>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/recipeBook"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Recipe Book"
+                            android:gravity="center"
+                            android:textSize="24dp"
+                            android:textStyle="bold"/>
+
+                        <!-- Cell content for first row and first column -->
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/friends"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Friends"
+                            android:gravity="center"
+                            android:textSize="24dp"
+                            android:textStyle="bold"/>
+
+                    </RelativeLayout>
+
+                </TableRow>
+
+                <TableRow>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/recipeSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Find Recipe"
+                            android:gravity="center"
+                            android:textSize="24dp"
+                            android:textStyle="bold"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/userSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Find User"
+                            android:gravity="center"
+                            android:textSize="24dp"
+                            android:textStyle="bold"/>
+                    </RelativeLayout>
+
+                </TableRow>
+
+            </TableLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

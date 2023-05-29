@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Recipe"
+            android:textSize="32dp"
+            android:textColor="@android:color/black"
+            android:gravity="center_horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/recipe_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/textinput1"
+            android:hint="Recipe Name" />
+
+        <EditText
+            android:id="@+id/prep_time_input"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/textinput1"
+            android:hint="Preparation Time (in minutes)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/cook_time_input"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="10dp"
+            android:hint="Cooking Time (in minutes)"
+            android:paddingStart="10dp"
+            android:background="@drawable/textinput1"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/servings_input"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/textinput1"
+            android:hint="Servings"
+            android:inputType="number" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estimated Cost"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+        <RadioGroup
+            android:id="@+id/cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:padding="10dp">
+
+            <RadioButton
+                android:id="@+id/choice1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$"
+                android:textSize="18sp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:checked="true"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/choice2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$$"
+                android:textSize="18sp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/choice3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$$$"
+                android:textSize="18sp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/choice4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$$$$"
+                android:textSize="18sp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/choice5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$$$$$"
+                android:textSize="18sp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy Setting"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+        <RadioGroup
+            android:id="@+id/privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:padding="10dp">
+
+            <RadioButton
+                android:id="@+id/privacy0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Private"
+                android:textSize="18dp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:checked="true"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/privacy1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Friends Only"
+                android:textSize="18dp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/privacy2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Public"
+                android:textSize="18dp"
+                android:background="@drawable/radio_button_background"
+                android:button="@null"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textinput1"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="Ingredients"
+                android:textStyle="bold"
+                android:textSize="26dp"
+                android:gravity="left"
+                android:paddingStart="32dp"/>
+            <Button
+                android:id="@+id/addIngredient"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="+"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textinput1"
+            android:padding="16dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="Instructions"
+                android:textStyle="bold"
+                android:textSize="26dp"
+                android:gravity="left"
+                android:paddingStart="32dp"/>
+            <Button
+                android:id="@+id/removeInstruction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="-"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:backgroundTint="@color/delete_red"/>
+            <Button
+                android:id="@+id/addInstruction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="+"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Table rows for ingredient input -->
+        <LinearLayout
+            android:id="@+id/instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/addRecipeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:text="Add Recipe To My Recipe Book" />
+
+    </LinearLayout>
+
+</ScrollView>

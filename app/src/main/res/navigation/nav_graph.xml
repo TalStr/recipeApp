@@ -1,0 +1,159 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.recipeapp.HomeFragment"
+        android:label="Home">
+        <argument
+            android:name="userID"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/action_home_to_recipeBook"
+            app:destination="@id/recipeBookFragment" />
+        <argument
+            android:name="userID"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/action_home_to_friendList"
+            app:destination="@id/followingListFragment" />
+        <action
+            android:id="@+id/action_home_to_accountManager"
+            app:destination="@id/accountManagerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_recipeSearchFragment"
+            app:destination="@id/recipeSearchFragment" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_userSearchFragment"
+            app:destination="@id/userSearchFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipeBookFragment"
+        android:name="com.example.recipeapp.RecipeBookFragment"
+        android:label="Recipe Book"
+        tools:layout="@layout/fragment_recipe_book">
+        <action
+            android:id="@+id/action_recipeBook_to_addRecipe"
+            app:destination="@id/addRecipeFragment" />
+        <action
+            android:id="@+id/action_recipeBook_to_recipePage"
+            app:destination="@id/recipePageFragment" />
+        <argument
+            android:name="ownerID"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="username"
+            app:argType="string"
+            android:defaultValue='"User"' />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/followingListFragment"
+        android:name="com.example.recipeapp.FollowingListFragment"
+        android:label="fragment_following_list"
+        tools:layout="@layout/fragment_following_list" >
+        <action
+            android:id="@+id/action_followingList_to_recipeBook"
+            app:destination="@id/recipeBookFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userPageFragment"
+        android:name="com.example.recipeapp.UserPageFragment"
+        android:label="fragment_user_page"
+        tools:layout="@layout/fragment_user_page">
+        <action
+            android:id="@+id/action_userPage_to_recipeBook"
+            app:destination="@id/recipeBookFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipePageFragment"
+        android:name="com.example.recipeapp.RecipePageFragment"
+        android:label="fragment_recipe_page"
+        tools:layout="@layout/fragment_recipe_page">
+        <action
+            android:id="@+id/action_recipePage_to_userPage"
+            app:destination="@id/userPageFragment" />
+        <argument
+            android:name="recipeID"
+            app:argType="integer"
+            android:defaultValue="-1" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/accountManagerFragment"
+        android:name="com.example.recipeapp.AccountManagerFragment"
+        android:label="fragment_account_manager"
+        tools:layout="@layout/fragment_account_manager" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.recipeapp.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_login_to_signUp"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/signUpFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.recipeapp.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUp_to_login"
+            app:destination="@id/loginFragment" />
+        <argument
+            android:name="userID"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/action_signUp_to_home"
+            app:destination="@id/homeFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/addRecipeFragment"
+        android:name="com.example.recipeapp.AddRecipeFragment"
+        android:label="fragment_add_recipe"
+        tools:layout="@layout/fragment_add_recipe" >
+        <action
+            android:id="@+id/action_addRecipe_to_recipeBook"
+            app:destination="@id/recipeBookFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/userSearchFragment"
+        android:name="com.example.recipeapp.UserSearchFragment"
+        android:label="fragment_user_search"
+        tools:layout="@layout/fragment_user_search" >
+
+        <action
+            android:id="@+id/action_userSearchFragment_to_recipeBookFragment"
+            app:destination="@id/recipeBookFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeSearchFragment"
+        android:name="com.example.recipeapp.recipeSearchFragment"
+        android:label="fragment_recipe_search"
+        tools:layout="@layout/fragment_recipe_search" />
+
+</navigation>
