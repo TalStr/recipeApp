@@ -36,7 +36,7 @@ import retrofit2.Response;
 
 public class RecipePageFragment extends Fragment {
     private FragmentRecipePageBinding binding;
-    DBHelper myDB;
+
 
     int userID;
     int recipeID;
@@ -60,14 +60,14 @@ public class RecipePageFragment extends Fragment {
             public void onResponse(Call<RecipeInfo> call, Response<RecipeInfo> response) {
                 info = response.body();
                 binding.recipeName.setText(info.recipe_name);
-                binding.authorName.setText("Author\n"+ info.author_name);
+                binding.authorName.setText("Author\n" + info.author_name);
                 //Rating
                 binding.averageRating.setRating(info.avg_rating);
                 binding.recipePrepTime.setText("Prep Time: " + info.preptime);
                 binding.recipeCookTime.setText("Cook Time: " + info.cooktime);
                 binding.recipeServings.setText("Servings: " + info.servings);
-                binding.recipePrice.setText("Price: " + (getResources().getStringArray(R.array.prices))[info.price-1]);
-                if(info.user_id == userID){
+                binding.recipePrice.setText("Price: " + (getResources().getStringArray(R.array.prices))[info.price - 1]);
+                if (info.user_id == userID) {
                     binding.addReview.setVisibility(View.GONE);
                 }
                 setReviews();
@@ -135,69 +135,6 @@ public class RecipePageFragment extends Fragment {
                 alertDialog.show();
             }
         });
-//        info = myDB.getRecipeInfo(recipeID);
-//        binding.recipeName.setText(info.recipe_name);
-//        binding.authorName.setText("Author\n"+ myDB.getUsernameById(info.user_id));
-//        //Rating
-//        binding.recipePrepTime.setText("Prep Time: " + info.preptime);
-//        binding.recipeCookTime.setText("Cook Time: " + info.cooktime);
-//        binding.recipeServings.setText("Servings: " + info.servings);
-//        binding.recipePrice.setText("Price: " + (getResources().getStringArray(R.array.prices))[info.price-1]);
-
-        //Ingredients
-//        LinkedList<RecipeIngredient> ingredients = myDB.getRecipeIngredients(recipeID);
-//        String text;
-//        String unit = "";
-//        for (RecipeIngredient ingredient : ingredients) {
-//            if(ingredient.unit != 0)
-//                unit = (getResources().getStringArray(R.array.Units))[ingredient.unit];
-//            text = ingredient.quantity + " " + unit + " Of " + myDB.getIngredientName(ingredient.ingredient_id);
-//            TextView textView = new TextView(getContext());
-//            textView.setLayoutParams(new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.MATCH_PARENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT));
-//            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-//            textView.setPadding(dpToPx(32), dpToPx(8), dpToPx(16), dpToPx(8));
-//            textView.setText(text);
-//            binding.ingredients.addView(textView);
-//        }
-
-        //Instructions
-//        LinkedList<RecipeInstruction> instructions = myDB.getRecipeInstructions(recipeID);
-//        for(RecipeInstruction instruction : instructions)
-//        {
-//            LinearLayout instructionLayout = new LinearLayout(getContext());
-//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.MATCH_PARENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT);
-//            layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
-//            instructionLayout.setOrientation(LinearLayout.HORIZONTAL);
-//            instructionLayout.setLayoutParams(layoutParams);
-//
-//            TextView step = new TextView(getContext());
-//            step.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-//            step.setPadding(dpToPx(32),0, 0, 0);
-//
-//            step.setLayoutParams(new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT)); // set weight to 1
-//            step.setText(instruction.step + ". ");
-//            instructionLayout.addView(step);
-//
-//            TextView instructionText = new TextView(getContext());
-//            instructionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-//            instructionText.setLayoutParams(new LinearLayout.LayoutParams(
-//                    0,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    1.0f)); // set weight to 1
-//            instructionText.setText(instruction.desc);
-//
-//            instructionLayout.addView(instructionText);
-//            layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
-//            instructionLayout.setLayoutParams(layoutParams);
-//            binding.instructions.addView(instructionLayout);
-//        }
-
     }
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
