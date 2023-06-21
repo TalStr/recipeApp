@@ -1,29 +1,22 @@
-package com.example.recipeapp;
+package com.example.recipeapp.customViews;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.RecipeInfo;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class RecipeBoxLayout extends ConstraintLayout {
 
-    public RecipeBoxLayout(Context context, RecipeInfo info) {
+    public RecipeBoxLayout(Context context, int sourceFragmentID, RecipeInfo info) {
         super(context);
         inflate(context, R.layout.recipe_box, this);
         ((TextView)findViewById(R.id.recipeName)).setText(info.recipe_name);
@@ -41,8 +34,10 @@ public class RecipeBoxLayout extends ConstraintLayout {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("recipeID", info.recipe_id);
-                Navigation.findNavController(v).navigate(R.id.action_recipeBook_to_recipePage, bundle);
-
+                if(sourceFragmentID == R.id.recipeBookFragment)
+                    Navigation.findNavController(v).navigate(R.id.action_recipeBook_to_recipePage, bundle);
+                else
+                    Navigation.findNavController(v).navigate(R.id.action_recipeSearchFragment_to_recipePageFragment, bundle);
             }
         });
     }

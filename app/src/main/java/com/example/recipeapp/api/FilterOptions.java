@@ -22,7 +22,7 @@ public class FilterOptions {
     @Override
     public String toString() {
         return "FilterOptions{" +
-                ", priceFilter=" + priceFilter +
+                "priceFilter=" + priceFilter +
                 ", minTime=" + minTime +
                 ", maxTime=" + maxTime +
                 ", exludeIngredients=" + excludeIngredients +

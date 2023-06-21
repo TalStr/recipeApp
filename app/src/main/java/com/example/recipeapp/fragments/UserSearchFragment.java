@@ -1,4 +1,4 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
 import android.os.Bundle;
 
@@ -13,14 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.UserPublicInfo;
-import com.example.recipeapp.databinding.FragmentHomeBinding;
+import com.example.recipeapp.customViews.UserBoxLayout;
 import com.example.recipeapp.databinding.FragmentUserSearchBinding;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -51,6 +52,9 @@ public class UserSearchFragment extends Fragment {
             public void onResponse(Call<List<UserPublicInfo>> call, Response<List<UserPublicInfo>> response) {
                 if(response.isSuccessful()){
                     users = response.body();
+                    for (UserPublicInfo user : users) {
+                        Log.d("api", "User Details: " + user.toString());
+                    }
                     binding.progressBar.setVisibility(View.GONE);
                     binding.results.setVisibility(View.VISIBLE);
                     displayUsers(users, 15); // Display initial list of users

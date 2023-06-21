@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".recipeSearchFragment"
+    tools:context=".fragments.RecipeSearchFragment"
     android:paddingTop="24dp">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
@@ -24,13 +24,13 @@
         android:background="@drawable/baseline_filter_alt_24"
         android:backgroundTint="@color/nice_gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintStart_toEndOf="@+id/searchBar"
         app:layout_constraintTop_toTopOf="parent" />
     <com.example.recipeapp.customViews.SortOptionsBox
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/sortOptions"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <ProgressBar

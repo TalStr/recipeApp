@@ -1,6 +1,5 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,15 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.UserPublicInfo;
+import com.example.recipeapp.customViews.UserBoxLayout;
 import com.example.recipeapp.databinding.FragmentFollowingListBinding;
-import com.example.recipeapp.databinding.FragmentHomeBinding;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,8 +27,8 @@ import retrofit2.Response;
 public class FollowingListFragment extends Fragment {
     private FragmentFollowingListBinding binding;
     private int userID;
-    private  DBHelper myDB;
     private ApiService apiService;
+    List<UserPublicInfo> following;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentFollowingListBinding.inflate(inflater, container, false);
@@ -48,9 +46,9 @@ public class FollowingListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<UserPublicInfo>> call, Response<List<UserPublicInfo>> response) {
                 if(response.isSuccessful()){
-                    List<UserPublicInfo> users = response.body();
-                    Log.d("api", users.toString());
-                    for (UserPublicInfo user : users) {
+                    following = response.body();
+                    Log.d("api", following.toString());
+                    for (UserPublicInfo user : following) {
                         binding.following.addView(new UserBoxLayout(getContext(), R.id.followingListFragment, user));
                     }
                 }
@@ -65,12 +63,6 @@ public class FollowingListFragment extends Fragment {
 
             }
         });
-
-//        LinkedList<UserDBitem> users = myDB.getFriends(userID);
-//        for (UserDBitem user : users) {
-//            binding.following.addView(new UserBoxLayout(getContext(), R.id.followingListFragment, userID, user.user_id,
-//                    user.username, user.profilepic, myDB));
-//        }
 
     }
 }

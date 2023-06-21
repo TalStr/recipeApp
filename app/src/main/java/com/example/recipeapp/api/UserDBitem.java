@@ -1,8 +1,8 @@
-package com.example.recipeapp;
+package com.example.recipeapp.api;
 
 public class UserDBitem {
-    int user_id;
-    String username, email, password, profilepic;
+    public int user_id;
+    public String username, email, password, profilepic;
     public UserDBitem(){
         this.user_id =-1;
     }

@@ -12,20 +12,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/profilepic1"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profilepicCard"
             android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/default_profilepic" />
-
+            app:cardCornerRadius="24dp"
+            android:layout_height="48dp">
+            <ImageView
+                android:id="@+id/profilepic1"
+                android:layout_width='match_parent'
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_gravity="top"
+                android:src="@drawable/default_profilepic"/>
+        </androidx.cardview.widget.CardView>
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:layout_toEndOf="@+id/profilepic1"
+            android:layout_toEndOf="@+id/profilepicCard"
             android:text="Username"
             android:textSize="20sp"
             android:textStyle="bold" />

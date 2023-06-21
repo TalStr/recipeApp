@@ -1,4 +1,4 @@
-package com.example.recipeapp;
+package com.example.recipeapp.customViews;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 
+import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.UserPublicInfo;
@@ -26,8 +28,7 @@ public class UserBoxLayout extends ConstraintLayout {
         int userID = CurrentUser.getInstance().getUserID();
         inflate(context, R.layout.user_box, this);
         ApiService apiService = ApiClient.getClient(getContext());
-        if (profileInfo.profilepic != null)
-            ((ImageView)findViewById(R.id.profilePic)).setImageResource(R.drawable.default_profilepic);
+        ((ImageView)findViewById(R.id.profilepic)).setImageBitmap(profileInfo.getProfilePic());
         ((TextView)findViewById(R.id.username)).setText(profileInfo.username);
         if(profileInfo.following)
             ((Button)findViewById(R.id.followButton)).setText("Unfollow");

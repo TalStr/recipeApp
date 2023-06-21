@@ -1,14 +1,18 @@
 package com.example.recipeapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 public class CurrentUser {
     private static CurrentUser instance = null;
 
     // User information
     private String username;
     private int userID;
+    private Bitmap profilePic;
 
     private CurrentUser() {
-        // Exists only to defeat instantiation.
     }
 
     public static CurrentUser getInstance() {
@@ -32,5 +36,15 @@ public class CurrentUser {
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+    public void setProfilePic(Bitmap bitmap){
+        this.profilePic = bitmap;
+    }
+    public void setProfilePic(String base64){
+        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+        this.profilePic = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+    public Bitmap getProfilePic(){
+        return this.profilePic;
     }
 }

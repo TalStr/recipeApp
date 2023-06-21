@@ -1,10 +1,11 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +22,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.FilterOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -124,6 +126,7 @@ public class FilterDialogFragment extends DialogFragment {
                         LinearLayout outList = dialogView.findViewById(R.id.ingredientsOut);
                         for (int i=0; i<outList.getChildCount(); i++)
                             filterOptions.excludeIngredients.add(((TextView)outList.getChildAt(i).findViewById(R.id.ingredientName)).getText().toString());
+                        Log.d("api", filterOptions.toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -132,6 +135,8 @@ public class FilterDialogFragment extends DialogFragment {
                         dialog.cancel();
                     }
                 });
+        AlertDialog dialog = builder.create();
+        //dialog.setOnDismissListener();
         return builder.create();
     }
 }

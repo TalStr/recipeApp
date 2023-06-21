@@ -1,4 +1,4 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.databinding.FragmentAddRecipeBinding;
@@ -43,7 +44,6 @@ import retrofit2.Response;
 
 public class AddRecipeFragment extends Fragment {
     private FragmentAddRecipeBinding binding;
-    DBHelper myDB;
     private int userID;
     private int ingredientCount;
     private int instructionCount;
@@ -61,7 +61,6 @@ public class AddRecipeFragment extends Fragment {
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        myDB = DBHelper.getInstance(getContext());
         apiService = ApiClient.getClient(getContext());
         binding.addIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,16 +191,6 @@ public class AddRecipeFragment extends Fragment {
         binding.addRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String name = binding.recipeNameInput.getText().toString();
-//                int prepTime = Integer.parseInt(binding.prepTimeInput.getText().toString());
-//                int cookTime = Integer.parseInt(binding.cookTimeInput.getText().toString());
-//                int servings = Integer.parseInt(binding.servingsInput.getText().toString());
-//                int price = selected.getText().toString().length();
-//                selected = (RadioButton)binding.getRoot().findViewById(binding.privacy.getCheckedRadioButtonId());
-//                int privacy = binding.privacy.indexOfChild(selected);
-//
-//                int recipeID = myDB.addRecipe(userID, name, prepTime, cookTime, servings, null, price, privacy);
-
                 HashMap<String, Object> recipeData = new HashMap<>();
                 recipeData.put("recipe_name", binding.recipeNameInput.getText().toString());
                 recipeData.put("preptime", Integer.parseInt(binding.prepTimeInput.getText().toString()));
@@ -321,35 +310,6 @@ public class AddRecipeFragment extends Fragment {
                         Log.e("api", "Error creating new recipe: " + t.getMessage());
                     }
                 });
-
-
-//                int count = binding.ingredients.getChildCount();
-//                int ingredientID;
-//                double quantity;
-//                int unit;
-//                LinearLayout ingredientRow;
-//                for (int i = 0; i < count; i++) {
-//                    ingredientRow = (LinearLayout)binding.ingredients.getChildAt(i);
-//                    ingredientID = myDB.getIngredientID(((EditText)ingredientRow.getChildAt(0)).getText().toString());
-//                    if(ingredientID == -1){
-//                        ingredientID = myDB.addIngredient(((EditText)ingredientRow.getChildAt(0)).getText().toString());
-//                    }
-//                    quantity = Double.parseDouble(((EditText)ingredientRow.getChildAt(1)).getText().toString());
-//                    unit = ((Spinner)ingredientRow.getChildAt(2)).getSelectedItemPosition();
-//                    myDB.addIngredientToRecipe(recipeID,ingredientID,quantity,unit);
-//                }
-
-
-//                int step;
-//                String text;
-//                LinearLayout instructionRow;
-//                for(int i = 0; i < instructionCount; i++)
-//                {
-//                    instructionRow = (LinearLayout)binding.instructions.getChildAt(i);
-//                    step = Integer.parseInt(((TextView)instructionRow.getChildAt(0)).getText().toString());
-//                    text = ((EditText)instructionRow.getChildAt(1)).getText().toString();
-//                    myDB.addInstructionToRecipe(recipeID, step, text);
-//                }
             }
         });
     }

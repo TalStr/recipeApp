@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.recipeapp.HomeFragment"
+        android:name="com.example.recipeapp.fragments.HomeFragment"
         android:label="Home">
         <argument
             android:name="userID"
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/recipeBookFragment"
-        android:name="com.example.recipeapp.RecipeBookFragment"
+        android:name="com.example.recipeapp.fragments.RecipeBookFragment"
         android:label="Recipe Book"
         tools:layout="@layout/fragment_recipe_book">
         <action
@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/followingListFragment"
-        android:name="com.example.recipeapp.FollowingListFragment"
+        android:name="com.example.recipeapp.fragments.FollowingListFragment"
         android:label="fragment_following_list"
         tools:layout="@layout/fragment_following_list" >
         <action
@@ -68,23 +68,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/userPageFragment"
-        android:name="com.example.recipeapp.UserPageFragment"
-        android:label="fragment_user_page"
-        tools:layout="@layout/fragment_user_page">
-        <action
-            android:id="@+id/action_userPage_to_recipeBook"
-            app:destination="@id/recipeBookFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/recipePageFragment"
-        android:name="com.example.recipeapp.RecipePageFragment"
+        android:name="com.example.recipeapp.fragments.RecipePageFragment"
         android:label="fragment_recipe_page"
         tools:layout="@layout/fragment_recipe_page">
-        <action
-            android:id="@+id/action_recipePage_to_userPage"
-            app:destination="@id/userPageFragment" />
         <argument
             android:name="recipeID"
             app:argType="integer"
@@ -93,12 +80,16 @@
     </fragment>
     <fragment
         android:id="@+id/accountManagerFragment"
-        android:name="com.example.recipeapp.AccountManagerFragment"
+        android:name="com.example.recipeapp.fragments.AccountManagerFragment"
         android:label="fragment_account_manager"
-        tools:layout="@layout/fragment_account_manager" />
+        tools:layout="@layout/fragment_account_manager" >
+        <action
+            android:id="@+id/action_accountManagerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.recipeapp.LoginFragment"
+        android:name="com.example.recipeapp.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
 
@@ -114,7 +105,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.example.recipeapp.SignUpFragment"
+        android:name="com.example.recipeapp.fragments.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -132,7 +123,7 @@
     </fragment>
     <fragment
         android:id="@+id/addRecipeFragment"
-        android:name="com.example.recipeapp.AddRecipeFragment"
+        android:name="com.example.recipeapp.fragments.AddRecipeFragment"
         android:label="fragment_add_recipe"
         tools:layout="@layout/fragment_add_recipe" >
         <action
@@ -142,7 +133,7 @@
     </fragment>
     <fragment
         android:id="@+id/userSearchFragment"
-        android:name="com.example.recipeapp.UserSearchFragment"
+        android:name="com.example.recipeapp.fragments.UserSearchFragment"
         android:label="fragment_user_search"
         tools:layout="@layout/fragment_user_search" >
 
@@ -152,8 +143,12 @@
     </fragment>
     <fragment
         android:id="@+id/recipeSearchFragment"
-        android:name="com.example.recipeapp.recipeSearchFragment"
+        android:name="com.example.recipeapp.fragments.RecipeSearchFragment"
         android:label="fragment_recipe_search"
-        tools:layout="@layout/fragment_recipe_search" />
+        tools:layout="@layout/fragment_recipe_search" >
+        <action
+            android:id="@+id/action_recipeSearchFragment_to_recipePageFragment"
+            app:destination="@id/recipePageFragment" />
+    </fragment>
 
 </navigation>

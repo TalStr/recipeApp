@@ -1,4 +1,4 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,9 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.Instruction;
@@ -47,18 +50,18 @@ public class RecipePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRecipePageBinding.inflate(inflater, container, false);
+        userID = CurrentUser.getInstance().getUserID();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            userID = CurrentUser.getInstance().getUserID();
             recipeID = bundle.getInt("recipeID");
         }
-        Log.e("api", userID + ", " + recipeID);
         apiService = ApiClient.getClient(getContext());
         Call<RecipeInfo> call = apiService.getRecipe(recipeID);
         call.enqueue(new Callback<RecipeInfo>() {
             @Override
             public void onResponse(Call<RecipeInfo> call, Response<RecipeInfo> response) {
                 info = response.body();
+                Log.d("api", info.toString());
                 binding.recipeName.setText(info.recipe_name);
                 binding.authorName.setText("Author\n" + info.author_name);
                 //Rating
@@ -72,6 +75,7 @@ public class RecipePageFragment extends Fragment {
                 }
                 setReviews();
                 setRecipeIngredients();
+                setRecipeInstructions();
             }
 
             @Override
@@ -140,40 +144,46 @@ public class RecipePageFragment extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-    private void setReviews(){
+    private void setReviews() {
+        Log.d("Reviews", "Attempting to retrieve reviews for recipe ID " + recipeID);
         Call<List<ReviewInfo>> reviews = apiService.getReviews(recipeID);
         reviews.enqueue(new Callback<List<ReviewInfo>>() {
             @Override
             public void onResponse(Call<List<ReviewInfo>> call, Response<List<ReviewInfo>> response) {
                 List<ReviewInfo> reviews = response.body();
-                for(ReviewInfo review : reviews){
-                    // Inflate the layout
-                    View reviewView = getLayoutInflater().inflate(R.layout.review_template, null);
+                Log.d("Reviews", "Received response from API: " + response);
+                if(reviews != null){
+                    for(ReviewInfo review : reviews){
+                        // Inflate the layout
+                        View reviewView = getLayoutInflater().inflate(R.layout.review_template, null);
 
-                    // Set the data
-                    // Assuming your review_template layout has TextViews with ids reviewerName, reviewRating and reviewText
-                    TextView reviewerName = reviewView.findViewById(R.id.username);
-                    MaterialRatingBar reviewRating = reviewView.findViewById(R.id.rating);
-                    TextView reviewText = reviewView.findViewById(R.id.comment);
+                        // Set the data
+                        TextView reviewerName = reviewView.findViewById(R.id.username);
+                        MaterialRatingBar reviewRating = reviewView.findViewById(R.id.rating);
+                        TextView reviewText = reviewView.findViewById(R.id.comment);
+                        ImageView profile = reviewView.findViewById(R.id.profilepic1);
+                        profile.setImageBitmap(review.getProfilePic());
+                        reviewerName.setText(review.username);
+                        reviewRating.setRating(review.stars);
+                        reviewText.setText(review.comment);
 
-                    reviewerName.setText(review.username);
-                    reviewRating.setRating(review.stars);
-                    reviewText.setText(review.comment);
+                        Log.d("Reviews", "Adding review from " + review.username + " with rating " + review.stars);
 
-                    // Add the inflated layout to mainContent
-                    binding.mainContent.addView(reviewView);
-                    if(review.user_id == userID)
-                        binding.addReview.setVisibility(View.GONE);
+                        binding.mainContent.addView(reviewView);
+                        if(review.user_id == userID)
+                            binding.addReview.setVisibility(View.GONE);
+                    }
+                } else {
+                    Log.w("Reviews", "No reviews received for recipe ID " + recipeID);
                 }
                 incrementApiCallsCompleted();
             }
 
             @Override
             public void onFailure(Call<List<ReviewInfo>> call, Throwable t) {
-
+                Log.e("Reviews", "API call failed", t);
             }
         });
-
     }
     private void setRecipeIngredients(){
         Call<List<RecipeIngredient>> call = apiService.getRecipeIngredients(recipeID);
@@ -202,7 +212,6 @@ public class RecipePageFragment extends Fragment {
                         textView.setText(text);
                         binding.ingredients.addView(textView);
                     }
-                    setRecipeInstructions();
                     incrementApiCallsCompleted();
 
                 }

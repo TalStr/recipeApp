@@ -5,32 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homepage_background"
-    tools:context=".RecipeBookFragment">
+    tools:context=".fragments.RecipeBookFragment">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Users\nRecipe Book"
+        android:textSize="32dp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:textStyle="bold"/>
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="28dp"
+        android:hint="Search Recipe"
+        android:background="@drawable/textinput2"
+        android:backgroundTint="#30ffffff"
+        android:paddingStart="16dp"
+        android:layout_below="@id/title"/>
+
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchBar">
 
         <LinearLayout
-            android:id="@+id/container_linear_layout"
+            android:id="@+id/recipesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginBottom="32dp">
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Users\nRecipe Book"
-                android:textSize="32dp"
-                android:textColor="@android:color/white"
-                android:gravity="center_horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:textStyle="bold"/>
         </LinearLayout>
 
     </ScrollView>
+    <TextView
+        android:id="@+id/noRecipesText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/searchBar"
+        android:textSize="32dp"
+        android:text="No Recipes Found"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addRecipe"

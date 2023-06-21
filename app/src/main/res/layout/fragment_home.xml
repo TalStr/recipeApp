@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/homepage_background"
-    tools:context=".HomeFragment">
+    tools:context=".fragments.HomeFragment">
     <RelativeLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
@@ -17,18 +17,27 @@
             android:background="@drawable/baseline_settings_24"
             android:layout_marginTop="43dp"
             android:layout_marginStart="25dp"/>
-        <ImageView
-            android:id="@+id/profilePic"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profilepicCard"
+            android:layout_marginTop="18dp"
             android:layout_width="150dp"
+            app:cardCornerRadius="75dp"
             android:layout_height="150dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/default_profilepic"/>
+            android:layout_centerHorizontal="true">
+            <ImageView
+                android:id="@+id/profilePic"
+                android:layout_width='match_parent'
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_gravity="top"
+                android:src="@drawable/default_profilepic"/>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/welcomeMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profilePic"
+            android:layout_below="@id/profilepicCard"
             android:layout_marginStart="50dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="50dp"

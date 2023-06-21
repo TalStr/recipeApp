@@ -1,10 +1,14 @@
 package com.example.recipeapp.api;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 public class UserPublicInfo {
     public int user_id;
     public String username;
-    public String profilepic;
     public boolean following;
+    public String profilepic;
 
     @Override
     public String toString() {
@@ -14,5 +18,9 @@ public class UserPublicInfo {
                 ", profilepic='" + profilepic + '\'' +
                 ", following=" + following +
                 '}';
+    }
+    public Bitmap getProfilePic(){
+        byte[] decodedString = Base64.decode(this.profilepic, Base64.DEFAULT);
+        return (BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
     }
 }

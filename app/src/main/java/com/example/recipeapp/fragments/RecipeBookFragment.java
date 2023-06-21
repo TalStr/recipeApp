@@ -1,4 +1,4 @@
-package com.example.recipeapp;
+package com.example.recipeapp.fragments;
 
 import android.os.Bundle;
 
@@ -7,16 +7,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.RecipeInfo;
+import com.example.recipeapp.customViews.RecipeBoxLayout;
 import com.example.recipeapp.databinding.FragmentRecipeBookBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,11 +31,11 @@ import retrofit2.Response;
 
 public class RecipeBookFragment extends Fragment {
     private FragmentRecipeBookBinding binding;
-    private DBHelper myDB;
     private int userID;
     private int bookOwnerID;
     private String username;
     private ApiService apiService;
+    List<RecipeInfo> recipes;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,12 +69,8 @@ public class RecipeBookFragment extends Fragment {
             @Override
             public void onResponse(Call<List<RecipeInfo>> call, Response<List<RecipeInfo>> response) {
                 if(response.isSuccessful()){
-                    List<RecipeInfo> recipes = response.body();
-                    Log.d("api", recipes.toString());
-                    for(RecipeInfo recipe : recipes){
-                                    binding.containerLinearLayout.addView(new RecipeBoxLayout(getContext(), recipe));
-
-                    }
+                    recipes = response.body();
+                    displayRecipes(recipes, 15);
                 }
                 else{
                     Log.d("api", "Error response from server: " + response.code());
@@ -80,19 +82,52 @@ public class RecipeBookFragment extends Fragment {
                 Log.e("api", "API call failed: " + t.getMessage());
             }
         });
+        binding.searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
-//        LinkedList<RecipeInfo> recipes = myDB.getUsersRecipes(bookOwnerID);
-//        String username = myDB.getUsernameById(bookOwnerID);
-//        for (RecipeInfo recipe : recipes) {
-//            binding.containerLinearLayout.addView(new RecipeBoxLayout(getContext(), bookOwnerID, username, recipe.recipeID, recipe.name,
-//                    recipe.prepTime + recipe.cookTime, recipe.price, 1));
-//        }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                List<RecipeInfo> searchResults = nameSearch(s.toString());
+                displayRecipes(searchResults, 15);
+            }
+        });
     }
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-
+    private List<RecipeInfo> nameSearch(String searchString){
+        List<RecipeInfo> matchingRecipes = new ArrayList<>();
+        for (RecipeInfo recipe : recipes) {
+            if (recipe.recipe_name.toLowerCase().contains(searchString.toLowerCase())) {
+                matchingRecipes.add(recipe);
+            }
+        }
+        return matchingRecipes;
+    }
+    private void displayRecipes(List<RecipeInfo> recipes, int limit){
+        binding.recipesContainer.removeAllViews();
+        if(recipes.size() == 0){
+            binding.recipesContainer.setVisibility(View.GONE);
+            binding.noRecipesText.setVisibility(View.VISIBLE);
+        }
+        else{
+            binding.noRecipesText.setVisibility(View.GONE);
+            binding.recipesContainer.setVisibility(View.VISIBLE);
+            for(RecipeInfo recipe: recipes){
+                if(limit == 0)
+                    break;
+                binding.recipesContainer.addView(new RecipeBoxLayout(requireContext(), R.id.recipeBookFragment, recipe));
+                limit--;
+            }
+        }
+    }
 }
