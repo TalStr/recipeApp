@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.recipeapp.CurrentUser;
 import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
@@ -33,10 +34,7 @@ public class FollowingListFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentFollowingListBinding.inflate(inflater, container, false);
         apiService = ApiClient.getClient(getContext());
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            userID = bundle.getInt("userID");
-        }
+        userID = CurrentUser.getInstance().getUserID();
 
         return binding.getRoot();
     }
@@ -47,7 +45,6 @@ public class FollowingListFragment extends Fragment {
             public void onResponse(Call<List<UserPublicInfo>> call, Response<List<UserPublicInfo>> response) {
                 if(response.isSuccessful()){
                     following = response.body();
-                    Log.d("api", following.toString());
                     for (UserPublicInfo user : following) {
                         binding.following.addView(new UserBoxLayout(getContext(), R.id.followingListFragment, user));
                     }

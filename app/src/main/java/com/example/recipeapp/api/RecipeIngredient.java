@@ -1,10 +1,10 @@
 package com.example.recipeapp.api;
 
-public class RecipeIngredient {
+import java.io.Serializable;
 
-    public int recipe_id;
+public class RecipeIngredient implements Serializable {
+
     public int ingredient_id;
-    public double quantity;
-    public int unit;
     public String ingredient_name;
+    public String description;
 }

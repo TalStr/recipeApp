@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-public class ReviewInfo {
+import java.io.Serializable;
+
+public class ReviewInfo implements Serializable {
     public int user_id;
     public String username;
     public int recipe_id;

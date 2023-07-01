@@ -23,9 +23,11 @@ import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.Instruction;
+import com.example.recipeapp.api.Recipe;
 import com.example.recipeapp.api.RecipeInfo;
 import com.example.recipeapp.api.RecipeIngredient;
 import com.example.recipeapp.api.ReviewInfo;
+import com.example.recipeapp.customViews.LoadingDialog;
 import com.example.recipeapp.databinding.FragmentRecipePageBinding;
 
 import java.util.HashMap;
@@ -39,13 +41,10 @@ import retrofit2.Response;
 
 public class RecipePageFragment extends Fragment {
     private FragmentRecipePageBinding binding;
-
-
     int userID;
     int recipeID;
     ApiService apiService;
-    RecipeInfo info;
-    private AtomicInteger apiCallsCompleted = new AtomicInteger(0);
+    Recipe info;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,37 +52,14 @@ public class RecipePageFragment extends Fragment {
         userID = CurrentUser.getInstance().getUserID();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            recipeID = bundle.getInt("recipeID");
+            info = (Recipe) bundle.getSerializable("recipe");
+            recipeID = info.getInfo().recipe_id;
+            setInfo(info.getInfo());
+            setIngredients(info.getIngredients());
+            setInstructions(info.getInstructions());
+            setReviews(info.getReviews());
         }
         apiService = ApiClient.getClient(getContext());
-        Call<RecipeInfo> call = apiService.getRecipe(recipeID);
-        call.enqueue(new Callback<RecipeInfo>() {
-            @Override
-            public void onResponse(Call<RecipeInfo> call, Response<RecipeInfo> response) {
-                info = response.body();
-                Log.d("api", info.toString());
-                binding.recipeName.setText(info.recipe_name);
-                binding.authorName.setText("Author\n" + info.author_name);
-                //Rating
-                binding.averageRating.setRating(info.avg_rating);
-                binding.recipePrepTime.setText("Prep Time: " + info.preptime);
-                binding.recipeCookTime.setText("Cook Time: " + info.cooktime);
-                binding.recipeServings.setText("Servings: " + info.servings);
-                binding.recipePrice.setText("Price: " + (getResources().getStringArray(R.array.prices))[info.price - 1]);
-                if (info.user_id == userID) {
-                    binding.addReview.setVisibility(View.GONE);
-                }
-                setReviews();
-                setRecipeIngredients();
-                setRecipeInstructions();
-            }
-
-            @Override
-            public void onFailure(Call<RecipeInfo> call, Throwable t) {
-
-            }
-        });
-
         return binding.getRoot();
     }
 
@@ -99,7 +75,7 @@ public class RecipePageFragment extends Fragment {
                 final EditText input2 = dialogView.findViewById(R.id.review);
 
                 builder.setView(dialogView)
-                        .setTitle("Your Popup Title")
+                        .setTitle("Add a review")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -144,144 +120,84 @@ public class RecipePageFragment extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-    private void setReviews() {
-        Log.d("Reviews", "Attempting to retrieve reviews for recipe ID " + recipeID);
-        Call<List<ReviewInfo>> reviews = apiService.getReviews(recipeID);
-        reviews.enqueue(new Callback<List<ReviewInfo>>() {
-            @Override
-            public void onResponse(Call<List<ReviewInfo>> call, Response<List<ReviewInfo>> response) {
-                List<ReviewInfo> reviews = response.body();
-                Log.d("Reviews", "Received response from API: " + response);
-                if(reviews != null){
-                    for(ReviewInfo review : reviews){
-                        // Inflate the layout
-                        View reviewView = getLayoutInflater().inflate(R.layout.review_template, null);
-
-                        // Set the data
-                        TextView reviewerName = reviewView.findViewById(R.id.username);
-                        MaterialRatingBar reviewRating = reviewView.findViewById(R.id.rating);
-                        TextView reviewText = reviewView.findViewById(R.id.comment);
-                        ImageView profile = reviewView.findViewById(R.id.profilepic1);
-                        profile.setImageBitmap(review.getProfilePic());
-                        reviewerName.setText(review.username);
-                        reviewRating.setRating(review.stars);
-                        reviewText.setText(review.comment);
-
-                        Log.d("Reviews", "Adding review from " + review.username + " with rating " + review.stars);
-
-                        binding.mainContent.addView(reviewView);
-                        if(review.user_id == userID)
-                            binding.addReview.setVisibility(View.GONE);
-                    }
-                } else {
-                    Log.w("Reviews", "No reviews received for recipe ID " + recipeID);
-                }
-                incrementApiCallsCompleted();
-            }
-
-            @Override
-            public void onFailure(Call<List<ReviewInfo>> call, Throwable t) {
-                Log.e("Reviews", "API call failed", t);
-            }
-        });
+    private void setInfo(RecipeInfo info){
+        binding.recipeName.setText(info.recipe_name);
+        binding.authorName.setText("Author\n" + info.author_name);
+        binding.averageRating.setRating(info.avg_rating);
+        binding.recipePrepTime.setText("Prep Time: " + info.preptime);
+        binding.recipeCookTime.setText("Cook Time: " + info.cooktime);
+        binding.recipeServings.setText("Servings: " + info.servings);
+        binding.recipePrice.setText("Price: " + (getResources().getStringArray(R.array.prices))[info.price - 1]);
+        if (info.user_id == userID)
+            binding.addReview.setVisibility(View.GONE);
     }
-    private void setRecipeIngredients(){
-        Call<List<RecipeIngredient>> call = apiService.getRecipeIngredients(recipeID);
-        call.enqueue(new Callback<List<RecipeIngredient>>() {
-            @Override
-            public void onResponse(Call<List<RecipeIngredient>> call, Response<List<RecipeIngredient>> response) {
-                if(response.isSuccessful()){
-                    Log.d("api", "Ingredients onResponse: Success");
-                    List<RecipeIngredient> ingredients = response.body();
-                    String unit = "";
-                    String text;
-                    for (RecipeIngredient ingredient : ingredients) {
-                        if(ingredient.unit != 0){
-                            unit = (getResources().getStringArray(R.array.Units))[ingredient.unit];
-                            text = ingredient.quantity + " " + unit + " Of " + ingredient.ingredient_name;
-                        }
-                        else
-                            text = ingredient.quantity + " " + ingredient.ingredient_name;
-
-                        TextView textView = new TextView(getContext());
-                        textView.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                        textView.setPadding(dpToPx(32), dpToPx(8), dpToPx(16), dpToPx(8));
-                        textView.setText(text);
-                        binding.ingredients.addView(textView);
-                    }
-                    incrementApiCallsCompleted();
-
-                }
-                else{
-                    Log.e("api", "Ingredients onResponse: Failed, status code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<RecipeIngredient>> call, Throwable t) {
-                incrementApiCallsCompleted();
-                Log.e("api", "Ingredients onFailure: " + t.getMessage(), t);
-            }
-        });
-    }
-
-    private void setRecipeInstructions(){
-        Call<List<Instruction>> call = apiService.getRecipeInstructions(recipeID);
-        call.enqueue(new Callback<List<Instruction>>() {
-            @Override
-            public void onResponse(Call<List<Instruction>> call, Response<List<Instruction>> response) {
-                List<Instruction> instructions = response.body();
-                for(Instruction instruction : instructions)
-                {
-                    LinearLayout instructionLayout = new LinearLayout(getContext());
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
-                    instructionLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    instructionLayout.setLayoutParams(layoutParams);
-
-                    TextView step = new TextView(getContext());
-                    step.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                    step.setPadding(dpToPx(32),0, 0, 0);
-
-                    step.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT)); // set weight to 1
-                    step.setText(instruction.step + ". ");
-                    instructionLayout.addView(step);
-
-                    TextView instructionText = new TextView(getContext());
-                    instructionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                    instructionText.setLayoutParams(new LinearLayout.LayoutParams(
-                            0,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            1.0f)); // set weight to 1
-                    instructionText.setText(instruction.description);
-
-                    instructionLayout.addView(instructionText);
-                    layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
-                    instructionLayout.setLayoutParams(layoutParams);
-                    binding.instructions.addView(instructionLayout);
-                }
-                incrementApiCallsCompleted();
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Instruction>> call, Throwable t) {
-                incrementApiCallsCompleted();
-            }
-        });
-    }
-    private void incrementApiCallsCompleted() {
-        if (apiCallsCompleted.incrementAndGet() == 3) {
-            binding.progressBar.setVisibility(View.GONE);
-            binding.mainContent.setVisibility(View.VISIBLE);
+    private void setIngredients(List<RecipeIngredient> ingredients){
+        if(ingredients == null) return;
+        String unit = "";
+        String text;
+        for (RecipeIngredient ingredient : ingredients) {
+            text=ingredient.description;
+            TextView textView = new TextView(getContext());
+            textView.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            textView.setPadding(dpToPx(32), dpToPx(8), dpToPx(16), dpToPx(8));
+            textView.setText(text);
+            binding.ingredients.addView(textView);
         }
     }
+    private void setInstructions(List<Instruction> instructions){
+        if(instructions == null) return;
+        for(Instruction instruction : instructions)
+        {
+            LinearLayout instructionLayout = new LinearLayout(getContext());
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
+            instructionLayout.setOrientation(LinearLayout.HORIZONTAL);
+            instructionLayout.setLayoutParams(layoutParams);
 
+            TextView step = new TextView(getContext());
+            step.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            step.setPadding(dpToPx(32),0, 0, 0);
+
+            step.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT)); // set weight to 1
+            step.setText(instruction.step + ". ");
+            instructionLayout.addView(step);
+
+            TextView instructionText = new TextView(getContext());
+            instructionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            instructionText.setLayoutParams(new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1.0f)); // set weight to 1
+            instructionText.setText(instruction.description);
+
+            instructionLayout.addView(instructionText);
+            layoutParams.setMargins(0, 0, 0, dpToPx(16)); // set bottom margin to 16dp
+            instructionLayout.setLayoutParams(layoutParams);
+            binding.instructions.addView(instructionLayout);
+        }
+    }
+    private void setReviews(List<ReviewInfo> reviews){
+        if(reviews == null) return;
+        for(ReviewInfo review : reviews){
+            View reviewView = getLayoutInflater().inflate(R.layout.review_template, null);
+            TextView reviewerName = reviewView.findViewById(R.id.username);
+            MaterialRatingBar reviewRating = reviewView.findViewById(R.id.rating);
+            TextView reviewText = reviewView.findViewById(R.id.comment);
+            ImageView profile = reviewView.findViewById(R.id.profilepic1);
+            profile.setImageBitmap(review.getProfilePic());
+            reviewerName.setText(review.username);
+            reviewRating.setRating(review.stars);
+            reviewText.setText(review.comment);
+            binding.mainContent.addView(reviewView);
+            if(review.user_id == userID)
+                binding.addReview.setVisibility(View.GONE);
+        }
+    }
 }

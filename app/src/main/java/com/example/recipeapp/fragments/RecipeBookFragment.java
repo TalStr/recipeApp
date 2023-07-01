@@ -19,6 +19,8 @@ import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.RecipeInfo;
+import com.example.recipeapp.customViews.AddRecipeDialogFragment;
+import com.example.recipeapp.customViews.LoadingDialog;
 import com.example.recipeapp.customViews.RecipeBoxLayout;
 import com.example.recipeapp.databinding.FragmentRecipeBookBinding;
 
@@ -35,14 +37,17 @@ public class RecipeBookFragment extends Fragment {
     private int bookOwnerID;
     private String username;
     private ApiService apiService;
+    LoadingDialog loadingDialog;
     List<RecipeInfo> recipes;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRecipeBookBinding.inflate(inflater, container, false);
+        apiService = ApiClient.getClient(getContext());
+        loadingDialog = new LoadingDialog(getActivity());
+        userID = CurrentUser.getInstance().getUserID();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            userID = CurrentUser.getInstance().getUserID();
             bookOwnerID = bundle.getInt("ownerID");
             username = bundle.getString("username");
         }
@@ -51,20 +56,13 @@ public class RecipeBookFragment extends Fragment {
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        apiService = ApiClient.getClient(getContext());
-        if(userID == bookOwnerID)
+        Call<List<RecipeInfo>> call;
+        if(userID == bookOwnerID){
             binding.addRecipe.setVisibility(View.VISIBLE);
-        binding.addRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("userID", userID);
-                Navigation.findNavController(v).navigate(R.id.action_recipeBook_to_addRecipe, bundle);
-            }
-        });
-
-        binding.title.setText(username + "s\nRecipe Book");
-        Call<List<RecipeInfo>> call = apiService.getUserRecipes(bookOwnerID);
+            call = apiService.getUserRecipes(bookOwnerID);
+        }
+        else
+            call = apiService.getUserPublicRecipes(bookOwnerID);
         call.enqueue(new Callback<List<RecipeInfo>>() {
             @Override
             public void onResponse(Call<List<RecipeInfo>> call, Response<List<RecipeInfo>> response) {
@@ -82,6 +80,15 @@ public class RecipeBookFragment extends Fragment {
                 Log.e("api", "API call failed: " + t.getMessage());
             }
         });
+        binding.addRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddRecipeDialogFragment dialogFragment = new AddRecipeDialogFragment();
+                dialogFragment.show(getParentFragmentManager(), "addRecipeDialog");
+            }
+        });
+
+        binding.title.setText(username + "s\nRecipe Book");
         binding.searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,10 +106,6 @@ public class RecipeBookFragment extends Fragment {
                 displayRecipes(searchResults, 15);
             }
         });
-    }
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
     }
     private List<RecipeInfo> nameSearch(String searchString){
         List<RecipeInfo> matchingRecipes = new ArrayList<>();
@@ -125,7 +128,7 @@ public class RecipeBookFragment extends Fragment {
             for(RecipeInfo recipe: recipes){
                 if(limit == 0)
                     break;
-                binding.recipesContainer.addView(new RecipeBoxLayout(requireContext(), R.id.recipeBookFragment, recipe));
+                binding.recipesContainer.addView(new RecipeBoxLayout(requireContext(), R.id.recipeBookFragment, loadingDialog, recipe));
                 limit--;
             }
         }

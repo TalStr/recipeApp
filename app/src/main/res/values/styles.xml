@@ -5,4 +5,10 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:maxHeight">48dp</item>
     </style>
+    <style name="AppTheme.RoundedButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/nice_blue</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="elevation">14dp</item>
+    </style>
 </resources>

@@ -21,7 +21,17 @@ public class CurrentUser {
         }
         return instance;
     }
-
+    public void setInfo(int userID, String username, Bitmap profilePic){
+        this.userID = userID;
+        this.username = username;
+        this.profilePic = profilePic;
+    }
+    public void setInfo(int userID, String username, String profilePic){
+        this.userID = userID;
+        this.username = username;
+        byte[] decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+        this.profilePic = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
     public String getUsername() {
         return username;
     }

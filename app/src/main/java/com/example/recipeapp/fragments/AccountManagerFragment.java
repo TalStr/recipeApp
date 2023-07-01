@@ -33,6 +33,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.MainActivity;
 import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
@@ -85,6 +86,9 @@ public class AccountManagerFragment extends Fragment {
                                 if (response.isSuccessful()) {
                                     Log.d("api", "Upload successful. Response code: " + response.code());
                                     CurrentUser.getInstance().setProfilePic(base64Image);
+                                    SharedPreferences.Editor editor = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE).edit();
+                                    editor.putString("profilePic", base64Image);
+                                    editor.apply();
                                     binding.profilePic.setImageBitmap(CurrentUser.getInstance().getProfilePic());
                                 } else {
                                     Log.e("api", "Upload failed. Response code: " + response.code() + ", error message: " + response.errorBody().toString());
@@ -128,8 +132,6 @@ public class AccountManagerFragment extends Fragment {
                                 }
 
                                 String token = task.getResult();
-                                Log.d("Logout", "Token retrieved: " + token);
-
                                 Call<Void> unbindDevice = apiService.unbindDevice(token);
                                 unbindDevice.enqueue(new Callback<Void>() {
                                     @Override
@@ -139,10 +141,11 @@ public class AccountManagerFragment extends Fragment {
                                         if(response.isSuccessful()){
                                             Log.d("Logout", "unbindDevice successful");
 
-                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginFragment.SHARED_PREFS, MODE_PRIVATE);
+                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             editor.putInt("userID", -1);
                                             editor.putString("username", null);
+                                            editor.putString("profilePic", null);
                                             editor.apply();
 
                                             NavController navController = Navigation.findNavController(view);

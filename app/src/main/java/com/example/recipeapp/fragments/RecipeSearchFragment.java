@@ -22,12 +22,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.recipeapp.CurrentUser;
 import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
 import com.example.recipeapp.api.FilterOptions;
 import com.example.recipeapp.api.RecipeInfo;
 import com.example.recipeapp.api.UserPublicInfo;
+import com.example.recipeapp.customViews.LoadingDialog;
 import com.example.recipeapp.customViews.RecipeBoxLayout;
 import com.example.recipeapp.customViews.SortOptionsBox;
 import com.example.recipeapp.databinding.FragmentRecipeSearchBinding;
@@ -45,16 +47,20 @@ import retrofit2.Response;
 public class RecipeSearchFragment extends Fragment {
     private FragmentRecipeSearchBinding binding;
     private ApiService apiService;
+    int userID;
     List<RecipeInfo> recipes;
     private FilterOptions filterOptions;
+    LoadingDialog loadingDialog;
     List<String> ingredients;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRecipeSearchBinding.inflate(inflater, container, false);
+        loadingDialog = new LoadingDialog(getActivity());
         apiService = ApiClient.getClient(getContext());
+        userID = CurrentUser.getInstance().getUserID();
         filterOptions = new FilterOptions(new ArrayList<>(), 0, Integer.MAX_VALUE, new ArrayList<>(), new ArrayList<>());
-        Call<List<RecipeInfo>> allRecipes = apiService.getAllRecipes();
+        Call<List<RecipeInfo>> allRecipes = apiService.getAllPublicRecipes(userID);
         allRecipes.enqueue(new Callback<List<RecipeInfo>>() {
             @Override
             public void onResponse(Call<List<RecipeInfo>> call, Response<List<RecipeInfo>> response) {
@@ -62,6 +68,7 @@ public class RecipeSearchFragment extends Fragment {
                     recipes = response.body();
                     binding.loading.setVisibility(View.GONE);
                     binding.mainContent.setVisibility(View.VISIBLE);
+                    Collections.sort(recipes, (r1, r2) -> Float.compare(r2.avg_rating, r1.avg_rating));
                     displayRecipes(recipes, 15);
                 }
             }
@@ -142,7 +149,7 @@ public class RecipeSearchFragment extends Fragment {
         for(RecipeInfo recipe: recipes){
             if(limit == 0)
                 break;
-            binding.mainContent.addView(new RecipeBoxLayout(requireContext(), R.id.recipeSearchFragment, recipe));
+            binding.mainContent.addView(new RecipeBoxLayout(requireContext(), R.id.recipeSearchFragment, loadingDialog, recipe));
             limit--;
         }
     }
@@ -272,11 +279,12 @@ public class RecipeSearchFragment extends Fragment {
                         for (int i=0; i<outList.getChildCount(); i++)
                             filterOptions.excludeIngredients.add(((TextView)outList.getChildAt(i).findViewById(R.id.ingredientName)).getText().toString());
                         Log.d("api", filterOptions.toString());
-                        Call<List<RecipeInfo>> filteredRecipesCall = apiService.getFilteredRecipes(filterOptions);
+                        Call<List<RecipeInfo>> filteredRecipesCall = apiService.getFilteredRecipes(userID, filterOptions);
                         filteredRecipesCall.enqueue(new Callback<List<RecipeInfo>>() {
                             @Override
                             public void onResponse(Call<List<RecipeInfo>> call, Response<List<RecipeInfo>> response) {
                                 recipes = response.body();
+                                Collections.sort(recipes, (r1, r2) -> Float.compare(r2.avg_rating, r1.avg_rating));
                                 displayRecipes(recipes, 15);
                                 binding.searchBar.setText("");
                                 Log.d("api", recipes.toString());

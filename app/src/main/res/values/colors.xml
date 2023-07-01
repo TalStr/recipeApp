@@ -5,4 +5,5 @@
     <color name="delete_red">#FF0000</color>
     <color name="nice_gray">#808080</color>
     <color name="yellow_rating">#FFD700</color>
+    <color name="nice_blue">#007BFF</color> <!-- Or any other blue color code you prefer -->
 </resources>

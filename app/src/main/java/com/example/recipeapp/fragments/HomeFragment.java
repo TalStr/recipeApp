@@ -25,7 +25,6 @@ import retrofit2.Response;
 
 
 public class HomeFragment extends Fragment {
-
     private int userID;
     private FragmentHomeBinding binding;
     private ApiService apiService;
@@ -33,12 +32,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            userID = CurrentUser.getInstance().getUserID();
-        }
+        userID = CurrentUser.getInstance().getUserID();
         apiService = ApiClient.getClient(getContext());
-
         return binding.getRoot();
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -59,9 +54,7 @@ public class HomeFragment extends Fragment {
         binding.friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("userID", userID);
-                Navigation.findNavController(view).navigate(R.id.action_home_to_friendList, bundle);
+                Navigation.findNavController(view).navigate(R.id.action_home_to_friendList);
             }
         });
         binding.recipeBook.setOnClickListener(new View.OnClickListener() {
@@ -70,24 +63,8 @@ public class HomeFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("ownerID", userID);
-                Call<UserDBitem> userCall = apiService.getUserInfo(userID);
-                userCall.enqueue(new Callback<UserDBitem>() {
-                    @Override
-                    public void onResponse(Call<UserDBitem> call, Response<UserDBitem> response) {
-                        if(response.isSuccessful()){
-                            bundle.putString("username", response.body().username);
-                            Navigation.findNavController(view).navigate(R.id.action_home_to_recipeBook, bundle);
-                        }
-                        else{
-                            Log.d("api", "nope");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserDBitem> call, Throwable t) {
-                        Log.e("api", "error");
-                    }
-                });
+                bundle.putString("username", CurrentUser.getInstance().getUsername());
+                Navigation.findNavController(view).navigate(R.id.action_home_to_recipeBook, bundle);
             }
         });
         binding.userSearch.setOnClickListener(new View.OnClickListener() {

@@ -75,7 +75,6 @@ public class FilterDialogFragment extends DialogFragment {
                     }
                 });
                 ingredientList.addView(ingredientView);
-
                 ingredients.remove(outIngredient.getText().toString());
                 outIngredient.setAdapter( new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, ingredients));
                 inIngredient.setAdapter( new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, ingredients));

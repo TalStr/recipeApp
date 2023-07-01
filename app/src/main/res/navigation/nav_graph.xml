@@ -41,9 +41,6 @@
         android:label="Recipe Book"
         tools:layout="@layout/fragment_recipe_book">
         <action
-            android:id="@+id/action_recipeBook_to_addRecipe"
-            app:destination="@id/addRecipeFragment" />
-        <action
             android:id="@+id/action_recipeBook_to_recipePage"
             app:destination="@id/recipePageFragment" />
         <argument
@@ -54,6 +51,12 @@
             android:name="username"
             app:argType="string"
             android:defaultValue='"User"' />
+        <action
+            android:id="@+id/action_recipeBookFragment_to_addRecipeOneFragment"
+            app:destination="@id/addRecipeOneFragment" />
+        <action
+            android:id="@+id/action_recipeBookFragment_to_addRecipeDialogFragment"
+            app:destination="@id/addRecipeDialogFragment" />
 
     </fragment>
 
@@ -122,16 +125,6 @@
 
     </fragment>
     <fragment
-        android:id="@+id/addRecipeFragment"
-        android:name="com.example.recipeapp.fragments.AddRecipeFragment"
-        android:label="fragment_add_recipe"
-        tools:layout="@layout/fragment_add_recipe" >
-        <action
-            android:id="@+id/action_addRecipe_to_recipeBook"
-            app:destination="@id/recipeBookFragment" />
-
-    </fragment>
-    <fragment
         android:id="@+id/userSearchFragment"
         android:name="com.example.recipeapp.fragments.UserSearchFragment"
         android:label="fragment_user_search"
@@ -150,5 +143,41 @@
             android:id="@+id/action_recipeSearchFragment_to_recipePageFragment"
             app:destination="@id/recipePageFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addRecipeOneFragment"
+        android:name="com.example.recipeapp.customViews.AddRecipeOneFragment"
+        android:label="AddRecipeOneFragment" >
+        <action
+            android:id="@+id/action_addRecipeOneFragment_to_addRecipeTwoFragment"
+            app:destination="@id/addRecipeTwoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addRecipeTwoFragment"
+        android:name="com.example.recipeapp.customViews.AddRecipeTwoFragment"
+        android:label="fragment_add_recipe_two"
+        tools:layout="@layout/fragment_add_recipe_two" >
+        <action
+            android:id="@+id/action_addRecipeTwoFragment_to_addRecipeOneFragment"
+            app:destination="@id/addRecipeOneFragment" />
+        <action
+            android:id="@+id/action_addRecipeTwoFragment_to_addRecipeThreeFragment"
+            app:destination="@id/addRecipeThreeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addRecipeThreeFragment"
+        android:name="com.example.recipeapp.customViews.AddRecipeThreeFragment"
+        android:label="fragment_add_recipe_three"
+        tools:layout="@layout/fragment_add_recipe_three" >
+        <action
+            android:id="@+id/action_addRecipeThreeFragment_to_addRecipeTwoFragment"
+            app:destination="@id/addRecipeTwoFragment" />
+        <action
+            android:id="@+id/action_addRecipeThreeFragment_to_recipeBookFragment"
+            app:destination="@id/recipeBookFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/addRecipeDialogFragment"
+        android:name="com.example.recipeapp.customViews.AddRecipeDialogFragment"
+        android:label="AddRecipeDialogFragment" />
 
 </navigation>

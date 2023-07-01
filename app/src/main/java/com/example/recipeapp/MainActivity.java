@@ -2,10 +2,15 @@ package com.example.recipeapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavInflater;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.example.recipeapp.api.ApiClient;
@@ -21,11 +26,34 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
+    public static final String SHARED_PREFS = "sharedPrefs";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiService = ApiClient.getClient(this);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int userID = sharedPreferences.getInt("userID", -1);
+        String username = sharedPreferences.getString("username", null);
+        String profilepic = sharedPreferences.getString("profilePic", null);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+
+        if(navHostFragment != null){
+            new Handler().post(() -> {
+                NavController navController = navHostFragment.getNavController();
+                NavInflater navInflater = navController.getNavInflater();
+                NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
+                if(userID != -1 && username != null && profilepic != null){
+                    CurrentUser.getInstance().setInfo(userID, username, profilepic);
+                    graph.setStartDestination(R.id.homeFragment);
+                }
+                else
+                    graph.setStartDestination(R.id.loginFragment);
+                navController.setGraph(graph);
+            });
+        }
+
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -34,23 +62,17 @@ public class MainActivity extends AppCompatActivity {
                             Log.w("notifs", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-                        // Get new FCM registration token
                         String token = task.getResult();
-                        Log.d("notifs", "Token: " + token);
-
                         // Check if it's the first time the app has been opened
-                        if (isFirstTime()) {
+                        if (isFirstTime())
                             sendRegistrationToServer(token);
-                        }
                     }
                 });
-
     }
     private boolean isFirstTime() {
         SharedPreferences preferences = getSharedPreferences("com.example.recipeapp", MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
         if (!ranBefore) {
-            // first time
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("RanBefore", true);
             editor.apply();
@@ -58,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
         return !ranBefore;
     }
     private void sendRegistrationToServer(String token) {
-        Log.d("api", "Sending registration to server with token: " + token);
-
         Call<Void> newDevice = apiService.addDevice(token);
         newDevice.enqueue(new Callback<Void>() {
             @Override

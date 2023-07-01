@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.recipeapp.CurrentUser;
+import com.example.recipeapp.MainActivity;
 import com.example.recipeapp.R;
 import com.example.recipeapp.api.ApiClient;
 import com.example.recipeapp.api.ApiService;
@@ -41,7 +42,6 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private ApiService apiService;
-    public static final String SHARED_PREFS = "sharedPrefs";
 
     @Nullable
     @Override
@@ -54,126 +54,90 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         apiService = ApiClient.getClient(getContext());
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        int userID = sharedPreferences.getInt("userID", -1);
-        String username = sharedPreferences.getString("username", null);
-        if(userID != -1 && username != null){
-            CurrentUser.getInstance().setUserID(userID);
-            CurrentUser.getInstance().setUsername(username);
-            Log.d("api", "" + userID);
-            Call<String> ppCall = apiService.getProfilePic(userID);
-            ppCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if(response.isSuccessful()){
-                        Log.d("api", "ProfilePic API response is successful.");
-                        CurrentUser.getInstance().setProfilePic(response.body());
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String, String> loginData = new HashMap<>();
+                loginData.put("username", binding.username.getText().toString());
+                loginData.put("password", binding.password.getText().toString());
+                Call<LoginResponse> loginCall = apiService.login(loginData);
+                loginCall.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        if(response.isSuccessful()){
+                            binding.incorrectInfo.setVisibility(View.INVISIBLE);
+                            LoginResponse loginResponse = response.body();
+                            CurrentUser.getInstance().setInfo(loginResponse.getUserId(), loginResponse.getUsername(), loginResponse.getProfilePic());
+                            if(binding.rememberMe.isChecked()){
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt("userID", loginResponse.getUserId());
+                                editor.putString("username", loginResponse.getUsername());
+                                editor.putString("profilePic", loginResponse.getProfilePic());
+                                editor.apply();
 
-                        NavOptions navOptions = new NavOptions.Builder()
-                                .setPopUpTo(R.id.loginFragment, true)
-                                .build();
-                        Navigation.findNavController(view).navigate(R.id.action_login_to_home, null, navOptions);
-                    } else {
-                        Log.d("api", "ProfilePic API response not successful. Response code: d" + response.code());
-                    }
-                }
+                                FirebaseMessaging.getInstance().getToken()
+                                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<String> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.e("FirebaseMessaging", "Failed to retrieve token");
+                                                    return;
+                                                }
 
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("api", "ProfilePic API call failed with error: " + t.getMessage(), t);
-                }
-            });
-        }
-        else{
-            binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    HashMap<String, String> loginData = new HashMap<>();
-                    loginData.put("username", binding.username.getText().toString());
-                    loginData.put("password", binding.password.getText().toString());
-                    Call<LoginResponse> loginCall = apiService.login(loginData);
-                    loginCall.enqueue(new Callback<LoginResponse>() {
-                        @Override
-                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            if(response.isSuccessful()){
-                                binding.incorrectInfo.setVisibility(View.INVISIBLE);
-                                LoginResponse loginResponse = response.body();
-                                Log.d("api", loginResponse.toString());
-                                CurrentUser.getInstance().setUsername(loginResponse.getUsername());
-                                CurrentUser.getInstance().setUserID(loginResponse.getUserId());
-                                CurrentUser.getInstance().setProfilePic(loginResponse.getProfilePic());
-                                if(binding.rememberMe.isChecked()){
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                String token = task.getResult();
+                                                Call<Void> bindUser = apiService.bindDevice(token, loginResponse.getUserId());
+                                                bindUser.enqueue(new Callback<Void>() {
+                                                    @Override
+                                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                                        if (response.isSuccessful()) {
+                                                            Log.d("API", "User binding successful");
 
-                                    editor.putInt("userID", loginResponse.getUserId());
-                                    editor.putString("username", loginResponse.getUsername());
-                                    editor.apply();
-
-                                    FirebaseMessaging.getInstance().getToken()
-                                            .addOnCompleteListener(new OnCompleteListener<String>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<String> task) {
-                                                    if (!task.isSuccessful()) {
-                                                        Log.e("FirebaseMessaging", "Failed to retrieve token");
-                                                        return;
+                                                            NavOptions navOptions = new NavOptions.Builder()
+                                                                    .setPopUpTo(R.id.loginFragment, true)
+                                                                    .build();
+                                                            Navigation.findNavController(view).navigate(R.id.action_login_to_home, null, navOptions);
+                                                        } else {
+                                                            Log.e("API", "User binding failed: " + response.message());
+                                                        }
                                                     }
 
-                                                    String token = task.getResult();
-                                                    Log.d("FirebaseMessaging", "Token: " + token + "\nuserID: " + loginResponse.getUserId());
+                                                    @Override
+                                                    public void onFailure(Call<Void> call, Throwable t) {
+                                                        Log.e("API", "User binding request failed: " + t.getMessage());
+                                                    }
+                                                });
+                                            }
+                                        });
 
-                                                    Call<Void> bindUser = apiService.bindDevice(token, loginResponse.getUserId());
-                                                    bindUser.enqueue(new Callback<Void>() {
-                                                        @Override
-                                                        public void onResponse(Call<Void> call, Response<Void> response) {
-                                                            if (response.isSuccessful()) {
-                                                                Log.d("API", "User binding successful");
-
-                                                                NavOptions navOptions = new NavOptions.Builder()
-                                                                        .setPopUpTo(R.id.loginFragment, true)
-                                                                        .build();
-                                                                Navigation.findNavController(view).navigate(R.id.action_login_to_home, null, navOptions);
-                                                            } else {
-                                                                Log.e("API", "User binding failed: " + response.message());
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onFailure(Call<Void> call, Throwable t) {
-                                                            Log.e("API", "User binding request failed: " + t.getMessage());
-                                                        }
-                                                    });
-                                                }
-                                            });
-
-                                }
-                                else{
-                                    NavOptions navOptions = new NavOptions.Builder()
-                                            .setPopUpTo(R.id.loginFragment, true)
-                                            .build();
-                                    Navigation.findNavController(view).navigate(R.id.action_login_to_home, null, navOptions);
-                                }
                             }
                             else{
-                                Log.d("api", "incorrent Info");
-                                binding.incorrectInfo.setVisibility(View.VISIBLE);
+                                NavOptions navOptions = new NavOptions.Builder()
+                                        .setPopUpTo(R.id.loginFragment, true)
+                                        .build();
+                                Navigation.findNavController(view).navigate(R.id.action_login_to_home, null, navOptions);
                             }
                         }
-
-                        @Override
-                        public void onFailure(Call<LoginResponse> call, Throwable t) {
-                            Log.e("api", t.getMessage());
+                        else{
+                            Log.d("api", "incorrent Info");
+                            binding.incorrectInfo.setVisibility(View.VISIBLE);
                         }
-                    });
-                }
-            });
+                    }
 
-            binding.signUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Navigation.findNavController(view).navigate(R.id.action_login_to_signUp);
-                }
-            });
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Log.e("api", t.getMessage());
+                    }
+                });
+            }
+        });
 
-        }
+        binding.signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_login_to_signUp);
+            }
+        });
+
     }
 }
